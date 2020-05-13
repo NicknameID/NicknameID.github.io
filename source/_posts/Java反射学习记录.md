@@ -8,7 +8,7 @@ tags:
 ---
 ### 1. 文章结构
 
-![Java的反射机制](/images/Java的反射机制.png)
+![Java的反射机制](/public/images/Java的反射机制.png)
 
 ### 2. 反射是什么？
 
