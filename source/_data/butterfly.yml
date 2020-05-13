@@ -7,13 +7,13 @@
 menu:
   首页: / || fa fa-home
   归档: /archives/ || fa fa-archive
-  标签: /tags/ || fa fa-tags
-  分类: /categories/ || fa fa-folder-open
-  链接: /link/ || fa fa-link
-  关于: /about/ || fa fa-heart
-  其它||fa fa-list:
-    - Music || /music/ || fa fa-music
-    - Movie || /movies/ || fa fa-film
+  # 标签: /tags/ || fa fa-tags
+  # 分类: /categories/ || fa fa-folder-open
+  # 链接: /link/ || fa fa-link
+  # 关于: /about/ || fa fa-heart
+  # 其它||fa fa-list:
+    # - Music || /music/ || fa fa-music
+    # - Movie || /movies/ || fa fa-film
 
 # PWA
 # See https://github.com/JLHwung/hexo-offline
@@ -552,10 +552,10 @@ aside:
     limit: 5 # if set 0 will show all
   card_categories:
     enable: true
-    limit: 8 # if set 0 will show all
+    limit: 0 # if set 0 will show all
   card_tags:
     enable: true
-    limit: 40 # if set 0 will show all
+    limit: 0 # if set 0 will show all
     color: false
   card_archives:
     enable: true
