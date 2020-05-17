@@ -5,11 +5,11 @@ tags:
     - Java
 categories:
     - Java基础
-cover: https://i.loli.net/2020/05/17/UHmkQnrY54i1EfJ.png
+cover: https://i.loli.net/2020/05/17/9zntoTSAMYkryip.png
 ---
 
 ### 1. 文章结构
-![Java的IO总结](https://i.loli.net/2020/05/17/UHmkQnrY54i1EfJ.png)
+![Java的IO总结](https://i.loli.net/2020/05/17/9zntoTSAMYkryip.png)
 
 
 ### 2. 核心类
