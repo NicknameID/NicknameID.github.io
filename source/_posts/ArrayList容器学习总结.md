@@ -7,7 +7,7 @@ categories:
     - Java基础
 cover: https://i.loli.net/2020/05/20/QwEJ3kxRnIahBz5.png
 ---
-
+# ArrayList容器学习总结
 ### 文章结构
 
 ![ArrayList容器](https://i.loli.net/2020/05/20/QwEJ3kxRnIahBz5.png)
