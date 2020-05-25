@@ -13,7 +13,7 @@ cover: https://i.loli.net/2020/05/25/LrZQy1ASqxsongB.png
 
 ## 1. 类结构
 
-![继承实现关系图](https://i.loli.net/2020/05/25/YmSLJGAnVx5qUsz.png)
+![继承实现关系图](https://i.loli.net/2020/05/25/LNKus7G16cgbo3X.png)
 
 上图可以看到，HashMap继承了AbstractMap，实现的接口有，Map、Cloneable、Serializable。
 
