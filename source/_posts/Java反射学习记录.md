@@ -5,13 +5,12 @@ categories:
     - Java基础
 tags: 
     - Java
-cover: https://i.loli.net/2020/05/17/Gq2Y5cmNvP8KlHJ.png
+cover: https://i.loli.net/2020/05/26/vblkX6NYjFLBH3h.png
 ---
 # Java反射学习记录
 
 ### 1. 文章结构
-
-![Java的反射机制](https://i.loli.net/2020/05/17/Gq2Y5cmNvP8KlHJ.png)
+![Java的反射机制.png](https://i.loli.net/2020/05/26/vblkX6NYjFLBH3h.png)
 
 ### 2. 反射是什么？
 
