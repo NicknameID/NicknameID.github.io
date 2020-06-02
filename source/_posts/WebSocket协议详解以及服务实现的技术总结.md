@@ -295,7 +295,7 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
 TextWebSocketHandler是用于处理文本消息处理器，也是AbstractWebSocketHandler的派生类
 将CustomWebSocketHandler注册成spring的一个Bean
 */
-Component
+@Component
 @Slf4j
 public class CustomWebSocketHandler extends TextWebSocketHandler {
     @Resource
@@ -480,10 +480,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
     function close() {
         if (ws === null || ws === undefined) {
             alert("请先连接")
+            return
         }
         ws.close()
         if (!timer) {
             alert("请先连接")
+            return
         }
         timer.clear()
     }
