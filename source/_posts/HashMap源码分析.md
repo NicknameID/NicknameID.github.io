@@ -5,11 +5,11 @@ tags:
     - Java
 categories:
     - Java基础
-cover: https://i.loli.net/2020/05/25/LrZQy1ASqxsongB.png
+cover: https://i.loli.net/2020/06/02/RBHFrCTbui91Ltn.png
 ---
 # HashMap源码解析
 
-![HashMap源码解析文章结构](https://i.loli.net/2020/05/25/LrZQy1ASqxsongB.png)
+![HashMap源码解析文章结构](https://i.loli.net/2020/06/02/RBHFrCTbui91Ltn.png)
 
 ## 1. 类结构
 
