@@ -19,7 +19,7 @@ cover: https://i.loli.net/2020/06/02/AU7RhwT5BvkrPqd.png
 
 
 
-## ws技术可以解决什么什么样的业务场景问题？
+## ws技术可以解决什么样的业务场景问题？
 
 
 
