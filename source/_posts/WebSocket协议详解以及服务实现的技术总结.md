@@ -201,7 +201,7 @@ POM.xml
 ```
 ![](https://i.loli.net/2020/06/02/lHDMrcfYRLVNhQI.png)
 
-可以看到`srping-boot-starter-websocket`包含了`spring-boot-starter-web`，所以我们不需要再引入服务器依赖。其中还用到了，`spring-message`和`spring=websocket`
+可以看到`srping-boot-starter-websocket`包含了`spring-boot-starter-web`，所以我们不需要再引入服务器依赖。其中还用到了，`spring-message`和`spring-websocket`
 
 ![](https://i.loli.net/2020/06/02/ZTq4EOUHWPIz2h5.png)
 
@@ -220,8 +220,8 @@ POM.xml
 
 ```java
 /*
-	握手处理器，用于客户端的握手请求
-	需要实现HandshakeInterceptor接口并注册层spring的一个Bean
+握手处理器，用于客户端的握手请求
+需要实现HandshakeInterceptor接口并注册成spring的一个Bean
 */
 @Component
 @Slf4j
@@ -293,7 +293,7 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
 消息处理器，用处接收来自客户端的请求
 需要继承AbstractWebSocketHandler这个抽象类来实现自己的自定义消息处理器
 TextWebSocketHandler是用于处理文本消息处理器，也是AbstractWebSocketHandler的派生类
-将CustomWebSocketHandler注册层spring的一个Bean
+将CustomWebSocketHandler注册成spring的一个Bean
 */
 Component
 @Slf4j
@@ -342,12 +342,12 @@ public class CustomWebSocketHandler extends TextWebSocketHandler {
 
 ```java
 /*
-Session管理器，用于管理session，并注册层spring的一个Bean
+Session管理器，用于管理session，并注册成spring的一个Bean
 */
 @Component
 @Slf4j
 public class WsSessionManager {
-  // 使用ConcurrentHashMap在多线程写时保证线程安全
+  // 使用ConcurrentHashMap在多线程修改时保证线程安全
     private static final ConcurrentHashMap<String, WebSocketSession> 
       SESSION_POOL = new ConcurrentHashMap<>();;
 
@@ -451,7 +451,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         // 打开一个 web socket
         var token = document.getElementById("token").value
         var channelId = document.getElementById("channelId").value
-        ws = new WebSocket(`ws://localhost:8080/registry?token=${token}&channelId=${channelId}`);
+        ws = new WebSocket(`ws://localhost:8080/channel?token=${token}&channelId=${channelId}`);
 
         ws.onopen = function () {
             console.log("连接完成，可以发送数据");
@@ -531,15 +531,15 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
 #### MQ或总线的广播机制
 
-通过MQ或Redis的消息订阅机制，进行消息的广播。将ws服务节点接入到同一的MQ或者Redis中，订阅同于个主题或频道。当需要发送消息的时候，将消息广播给所有节点，节点收到广播后会去匹配当前消息的目标连接是否在本节点上。如果在本节点就进行消息推送。不在本节点就自动忽略。
+通过MQ或Redis的消息订阅和发布机制，进行消息的广播。将ws服务节点接入到统一的MQ或者Redis中，订阅同一个主题或频道。当需要发送消息的时候，将消息广播给所有节点，节点收到广播后会去匹配当前消息的目标连接是否在本节点上。如果在本节点就进行消息推送。不在本节点就自动忽略。
 
-**优点**：实现简单，维护方便。架构上只需引入一个MQ或这Redis中间件。适合ws服务节点规模不大的场景
+**优点**：实现简单，维护方便。架构上只需引入一个MQ或Redis中间件。适合ws服务节点规模不大的场景
 
-**缺点**：需要良好的代码实现，搞不好容易发生广播风暴，拖垮集群。而且一般一个用户只会连接再集群中的某一个节点，而将消息广播给每一个节点，其实是没必要的。当集群规模扩张到一定程度，当发送一个广播后，所有节点开始计算，导致集群的计算负载短时间内出现峰值。
+**缺点**：需要良好的代码实现，搞不好容易发生广播风暴，拖垮集群。而且一般一个用户只会连接在集群中的某一个节点，而将消息广播给每一个节点，其实是没必要的。当集群规模扩张到一定程度，当发送一个广播后，所有节点开始计算，导致集群的计算负载短时间内出现峰值。
 
 #### 总结
 
-实际开发中，如果预测到集群规模不到的情况。可以优先考虑使用广播机制进行消息广播。但集群规模很大的情况下，考虑定向分配的架构设计。
+实际开发中，如果预测到集群规模不大的情况。可以优先考虑使用广播机制进行消息广播。但集群规模很大的情况下，考虑定向分配的架构设计。
 
 
 
