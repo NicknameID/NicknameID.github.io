@@ -1,5 +1,5 @@
 ---
-title: WebSocket协议详解以及WebSocket小型服务实现的技术总结
+title: WebSocket协议详解以及服务实现的技术总结
 date: 2020-06-02 17:34:33
 categories:
     - 应用总结
@@ -9,7 +9,7 @@ tags:
 cover: https://i.loli.net/2020/06/02/AU7RhwT5BvkrPqd.png
 ---
 
-# WebSocket协议详解以及WebSocket小型服务实现的技术总结
+# WebSocket协议详解以及WebSocket服务实现的技术总结
 
 
 
