@@ -8,7 +8,7 @@ tags:
     - HttpClient
     - 指标监控
     - Spring
-cover: https://raw.githubusercontent.com/OpenFeign/feign/master/src/docs/overview.png
+cover: https://i.loli.net/2020/06/11/oTC3KN8FzuxpkHq.png
 ---
 
 # Feign在实际项目中的应用实践总结
