@@ -13,7 +13,7 @@ cover: https://raw.githubusercontent.com/OpenFeign/feign/master/src/docs/overvie
 
 # Feign在实际项目中的应用实践总结
 
-## Feign在是什么？
+## Feign是什么？
 
 > 是一个声明式的HTTP请求处理库，可以将命令式的http请求的编程，更改为声明式的http请求编程。
 
