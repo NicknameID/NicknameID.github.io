@@ -49,7 +49,6 @@ copy:
 # ---------------
 social:
   fa fa-github: https://github.com/NicknameID || Github
-  fa fa-envelope: mailto:huangtianyu_hty@163.com || Email
   fa fa-rss: /public/atom.xml || RSS
 
 ####    search    ####
