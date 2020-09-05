@@ -9,7 +9,7 @@ tags:
 
 # 基于Redis的分布式锁
 
-Redis使用`redison`来实现分布式锁
+Redis使用`redisson`来实现分布式锁
 
 ```xml
 <dependency>
@@ -19,7 +19,7 @@ Redis使用`redison`来实现分布式锁
 </dependency>
 ```
 
-Redission文档
+Redisson文档
 
 https://github.com/redisson/redisson/wiki/1.-%E6%A6%82%E8%BF%B0
 
@@ -27,7 +27,7 @@ https://github.com/redisson/redisson/wiki/1.-%E6%A6%82%E8%BF%B0
 
 
 
-redison配置
+redisson配置
 
 ```java
 @Configuration
