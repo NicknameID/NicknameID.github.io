@@ -2,7 +2,7 @@
 title: 基于Redis的分布式锁
 date: 2020-09-05 19:34:23
 categories:
-    - 应用总结
+    - 分布式
 tags: 
     - 分布式
 ---
