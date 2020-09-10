@@ -6,7 +6,7 @@
   <link href="/public/atom.xml" rel="self"/>
   
   <link href="https://blog.mufeng.tech/public/"/>
-  <updated>2020-09-09T10:00:48.879Z</updated>
+  <updated>2020-09-10T08:14:25.501Z</updated>
   <id>https://blog.mufeng.tech/public/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL的crash-safe的原理</title>
+    <link href="https://blog.mufeng.tech/public/2020/09/10/MySQL%E7%9A%84crash-safe%E7%9A%84%E5%8E%9F%E7%90%86/"/>
+    <id>https://blog.mufeng.tech/public/2020/09/10/MySQL%E7%9A%84crash-safe%E7%9A%84%E5%8E%9F%E7%90%86/</id>
+    <published>2020-09-10T08:14:08.000Z</published>
+    <updated>2020-09-10T08:14:25.501Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="MySQL的crash-safe的原理"><a href="#MySQL的crash-safe的原理" class="headerlink" title="MySQL的crash-safe的原理"></a>MySQL的crash-safe的原理</h1><h3 id="组件分为"><a href="#组件分为" class="headerlink" title="组件分为"></a>组件分为</h3><ul><li>连接器</li><li>分析器</li><li>优化器</li><li>执行器</li><li>存储引擎（插件的形式）</li></ul><p>前面的四个分别是Server层的组件，后面存储引擎层是插件，如InnoDB，MyISAM，Memory等</p><h4 id="连接器"><a href="#连接器" class="headerlink" title="连接器"></a>连接器</h4><p>连接器的作用主要是维持和客户端之间的通信功能。同时还负责同客户端的认证和授权的功能。</p><p>每个连接在完成认证和授权后就会一直维持一个长连接，创建完连接的后的所有通信都不需要进行再次进行认证，但每次SQL请求操作都会有权限的认证</p><p>在连接完成后，如果连接长时间没有SQL请求通信，该连接会处于Sleep状态，直到超过MySQL实例配置的<code>wait_timeout</code>参数的时间后，连接器会主动断开该长连接。MySQL实例默认的<code>wait_timeout</code>的的时间是8小时</p><h4 id="分析器"><a href="#分析器" class="headerlink" title="分析器"></a>分析器</h4><p>分析器的执行分为两个过程，一个是词法分析，另一个是语法分析</p><p>我们发送的SQL语句是一个字符串，里面可能存在空格和字符串。词法分析器的作用就是把这个字符串代表的意思进行数据的格式化，比如<code>SELECT</code>子串标识这是一个读请求，<code>FROM t_table</code>表示要操作t_table这张表</p><p>语法分析的作用是要对这个语法的正确性做一个检查，如果当前的SQL语法不符合MySQL的语法，那么就直接报错了，不进行下一步的执行</p><h4 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h4><p>优化器的作用是根据分析器得出的结果再结合当前表数据的储存情况来的出一个查询效率最高的执行计划。常见的情况有“：</p><ol><li>同一个SQL语句中存在多个索引列条件，那么应该先选择哪个索引先进行查询</li><li>多表join操作的时候，如何选择哪个表作为驱动表等</li></ol><p>上面两种情况都是优化器等工作职责</p><h4 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h4><p>执行器的作用就是负责调用底层存储引擎实现的抽象接口，按照优化器输出的执行计划进行执行。执行器才是真正负责执行SQL操作的组件</p><h4 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h4><p>存储引擎的作用就是当初MySQL实现的时候留下的可扩展的点，不同的存储引擎的实现可以有着不同的应用场景。MySQL为存储引擎定一个统一的抽象接口，只要不同的存储引擎实现该抽象接口就能被上层的执行器比如OLTP的场景下需要数据库事务的支持，那么InnoDB就是好的选择。而在需要大量读请求而写请求少，并且不需要事物的情况下MyISAM是一个好的选择</p><p>一条SQL的执行就是上面的组件从上到下的执行顺序，下面就用MySQL默认的InnoDB引擎进行展开看看InnoDB的执行原理</p><h4 id="redo-log"><a href="#redo-log" class="headerlink" title="redo-log"></a>redo-log</h4><p>InnoDB有一个重要的模块: <code>redo-log</code>，它是InnoDB支持事物的重要模块。redo-log是物理日志，它记录了哪一个数据页上做了什么修改。可以说如果没有redo-log，InnoDB就不具有crash-safe的能力</p><p>redo-log是由一组分别为4个固定大小文件组成。可以通过MySQL的参数来指定文件的大小。作为日志文件，redo-log是顺序写的，所以写对磁盘来说是非常高效的。数据的结构可以看成是下面的图</p><p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://img2020.cnblogs.com/blog/1513538/202009/1513538-20200910161307325-660783359.png" alt=""></p><p>Check-point是当前的数据擦除指针，标识了当前redo-log的擦除文件位置。write-point是写指针，标识了当前的数据写文件位置。InnoDB要保证的是write-point不能超过check-point。check-point要一直保持在write-point之前的一段距离。</p><h4 id="bin-log"><a href="#bin-log" class="headerlink" title="bin-log"></a>bin-log</h4><p>bin-log是MySQL的server层实现的逻辑日志，相当于记录的SQL语句的操作逻辑。</p><h4 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h4><p>InnoDB是如何实现crash-safe的呢？一个需要知道的理论就是<code>两阶段提交</code></p><p>两阶段提交用简单点的话讲就是：</p><ol><li>先读取数据，并更新然后将新行数据保存在内存中</li><li>将物理更新记录写入redo-log，并标记这条记录为prepare状态（第一步）</li><li>InnoDB将操作提交到执行器，执行器再将逻辑更新记录写入bin-log，同时调用引擎的写入和更新接口将磁盘文件更新</li><li>上一步操作完成后再提交事物，将redo-log中对应的记录状态改为commit状态（第二步）</li><li>返回更新结果</li></ol><h4 id="崩溃后的数据恢复阶段"><a href="#崩溃后的数据恢复阶段" class="headerlink" title="崩溃后的数据恢复阶段"></a>崩溃后的数据恢复阶段</h4><p>如果在更新或写入数据的过程中，机器出现崩溃。那么在机器在重启后，MySQL会首先去验证redolog的完整性，如果redolog中没有prepare状态的记录，则记录是完整的，就日记提交。如果redolog中存在prepare记录，那么就去验证这条redolog对应的binlog记录，如果这条binlog是完整的，那么完整提交redolog，否则执行回滚逻辑</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;MySQL的crash-safe的原理&quot;&gt;&lt;a href=&quot;#MySQL的crash-safe的原理&quot; class=&quot;headerlink&quot; title=&quot;MySQL的crash-safe的原理&quot;&gt;&lt;/a&gt;MySQL的crash-safe的原理&lt;/h1&gt;&lt;h3 i
+      
+    
+    </summary>
+    
+    
+      <category term="数据库" scheme="https://blog.mufeng.tech/public/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+      <category term="MySQL" scheme="https://blog.mufeng.tech/public/tags/MySQL/"/>
+    
+  </entry>
   
   <entry>
     <title>基于ZooKeeper的分布式锁</title>
