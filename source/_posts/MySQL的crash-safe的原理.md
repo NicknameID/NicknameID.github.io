@@ -1,6 +1,6 @@
 ---
 title: MySQL的crash-safe的原理
-date: 2020-09-10 16:14:08
+date: 2020-09-10 16:14:09
 categories:
     - 数据库
 tags: 
